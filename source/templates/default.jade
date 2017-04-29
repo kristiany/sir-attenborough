@@ -49,7 +49,6 @@ script(type="text/javascript").
         recordRTC.stopRecording(function (audioURL) {
           var audio = document.getElementById("player")
           audio.src = audioURL
-          audio.play()
           var recordedBlob = recordRTC.getBlob()
           recordRTC.getDataURL(function(dataURL) { })
         });
