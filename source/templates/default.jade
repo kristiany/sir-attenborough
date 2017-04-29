@@ -1,0 +1,56 @@
+doctype html
+html
+  head
+    script(type="text/javascript", src="https://cdn.WebRTC-Experiment.com/RecordRTC.js")
+    link(rel='stylesheet', href='/css/index.css')
+    title Sir Attenborough
+  body
+    .header
+      h1.page-title Sir Attenborough
+
+    .main-content
+      block content
+
+    .footer
+      p Copyright © Kristian
+
+script(type="text/javascript").
+    recording = false
+    function doc_keyDown(e) {
+      if (e.key == 'z') {
+        if(!recording) {
+          console.log("Recording...")
+          document.getElementById("indicator").checked = true
+          function successCallback(stream) {
+              var options = {
+                mimeType: 'audio/webm',
+                audioBitsPerSecond: 128000
+              }
+              recordRTC = RecordRTC(stream, options)
+              recordRTC.startRecording()
+          }
+          function errorCallback(error) {
+              console.log("Error: " + error)
+          }
+          navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(successCallback)
+            .catch(errorCallback)
+        }
+        recording = true
+      }
+    }
+    function doc_keyUp(e) {
+      if (e.key == 'z') {
+        console.log("Stopped recording")
+        document.getElementById("indicator").checked = false
+        if(recording) {
+          recording = false
+        }
+        recordRTC.stopRecording(function (audioVideoWebMURL) {
+            var recordedBlob = recordRTC.getBlob()
+            recordRTC.getDataURL(function(dataURL) { })
+        });
+      }
+    }
+    document.addEventListener('keydown', doc_keyDown, false)
+    document.addEventListener('keyup', doc_keyUp, false)
