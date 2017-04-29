@@ -1,3 +1,5 @@
 # sir-attenborough
 
-Audio recording, write with your voice
+Speech writing, narrate your story.
+
+![](sir-a.jpeg)
