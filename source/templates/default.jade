@@ -2,6 +2,7 @@ doctype html
 html
   head
     script(type="text/javascript", src="https://cdn.WebRTC-Experiment.com/RecordRTC.js")
+    script(type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js")
     link(rel='stylesheet', href='/css/index.css')
     title Sir Attenborough
   body
@@ -50,7 +51,17 @@ script(type="text/javascript").
           var audio = document.getElementById("player")
           audio.src = audioURL
           var recordedBlob = recordRTC.getBlob()
-          recordRTC.getDataURL(function(dataURL) { })
+          recordRTC.getDataURL(function(data) {
+          $.ajax({
+            headers: {"Accept": "application/json"},
+            data: {"data": data},
+            url: "/recognize",
+            success: function(response){
+                var r = JSON.parse(response);
+                $("#output").html(response);
+              }
+            });
+          })
         });
       }
     }
