@@ -66,8 +66,10 @@ script(type="text/javascript").
                 }),
               url: "/recognize",
               success: function(response){
-                  var r = JSON.parse(response);
-                  $("#output").html(response);
+                  var transcripts = JSON.parse(response);
+                  $("#output").html(transcripts
+                    .map(t => t.transcript + ("undefined" === typeof t.confidence ? '' : " (c:" + t.confidence + ")"))
+                    .join("<br>"));
                 }
               })
             })

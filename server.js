@@ -34,7 +34,7 @@ app.post('/recognize', function (req, res, next) {
       encoding: 'LINEAR16',
       sampleRateHertz: 44100,
       languageCode: 'sv-SE',
-      maxAlternatives: 1
+      maxAlternatives: 3
     };
     //console.log("Data: " + req.query.data);
     /*speech.recognize({content: req.query.data}, config)
@@ -61,12 +61,17 @@ app.post('/recognize', function (req, res, next) {
       speechResponse.setEncoding('utf8');
       speechResponse.on('data', (answer) => {
         console.log('Answer: ' + answer);
-        res.send(answer);
+        var json = JSON.parse(answer);
+        var transcripts = [];
+        if(!("undefined" === typeof json.results
+           && json.results.length > 0
+           && "undefined" === typeof json.results.alternatives)) {
+          transcripts = json.results[0].alternatives;
+        }
+        res.send(JSON.stringify(transcripts));
       })
     });
-    console.log('data', req.body);
-    console.log('data len', req.body.length);
-    //console.log(req.body.data);
+    //console.log('data', req.body);
     request.write(JSON.stringify({
       config: config,
       audio: {
