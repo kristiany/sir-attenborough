@@ -13,7 +13,7 @@ html
       block content
 
     .footer
-      p Copyright © Kristian
+      p
 
 script(type="text/javascript").
     recording = false
@@ -24,10 +24,14 @@ script(type="text/javascript").
           document.getElementById("indicator").checked = true
           function successCallback(stream) {
               var options = {
-                mimeType: 'audio/webm',
-                audioBitsPerSecond: 128000
+                type: 'audio',
+                recorderType: StereoAudioRecorder,
+                mimeType: 'audio/wav',
+                sampleRate: 44100,
+                desiredSampleRate: 44100,
+                numberOfAudioChannels: 1
               }
-              recordRTC = RecordRTC(stream, options)
+              recordRTC = new RecordRTC(stream, options)
               recordRTC.startRecording()
           }
           function errorCallback(error) {
@@ -50,18 +54,23 @@ script(type="text/javascript").
         recordRTC.stopRecording(function (audioURL) {
           var audio = document.getElementById("player")
           audio.src = audioURL
-          var recordedBlob = recordRTC.getBlob()
           recordRTC.getDataURL(function(data) {
-          $.ajax({
-            headers: {"Accept": "application/json"},
-            data: {"data": data},
-            url: "/recognize",
-            success: function(response){
-                var r = JSON.parse(response);
-                $("#output").html(response);
-              }
-            });
-          })
+            $.ajax({
+              method: 'POST',
+              headers: {
+                "Accept": "application/json; charset=utf-8",
+                "Content-Type": "application/json; charset=utf-8"
+              },
+              data: JSON.stringify({
+                  data: data
+                }),
+              url: "/recognize",
+              success: function(response){
+                  var r = JSON.parse(response);
+                  $("#output").html(response);
+                }
+              })
+            })
         });
       }
     }
