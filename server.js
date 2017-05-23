@@ -33,6 +33,7 @@ app.post('/recognize', function (req, res, next) {
     const config = {
       encoding: 'LINEAR16',
       sampleRateHertz: 44100,
+      //languageCode: 'sv-SE',
       languageCode: 'sv-SE',
       maxAlternatives: 3
     };
@@ -63,9 +64,9 @@ app.post('/recognize', function (req, res, next) {
         console.log('Answer: ' + answer);
         var json = JSON.parse(answer);
         var transcripts = [];
-        if(!("undefined" === typeof json.results
+        if("undefined" !== typeof json.results
            && json.results.length > 0
-           && "undefined" === typeof json.results.alternatives)) {
+           && "undefined" !== typeof json.results[0].alternatives) {
           transcripts = json.results[0].alternatives;
         }
         res.send(JSON.stringify(transcripts));
